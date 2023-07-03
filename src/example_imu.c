@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
         printf("Error opening serial port\n");
         return 1;
     }
-    MSP_RAW_IMU_t raw_imu;
     printf("Reading raw IMU data\n");
+    MSP_RAW_IMU_t raw_imu;
     MSP_RAW_IMU(fd, &raw_imu);
     printf("accX: %d\n", raw_imu.accX);
     printf("accY: %d\n", raw_imu.accY);
@@ -24,6 +24,6 @@ int main(int argc, char* argv[]) {
     printf("gyrZ: %d\n", raw_imu.gyrZ);
     printf("magX: %d\n", raw_imu.magX);
     printf("magY: %d\n", raw_imu.magY);
-    printf("magZ: %d\n", raw_imu.magZ);
+    printf("magZ: %d\n", raw_imu.magZ);+
     return 0;
 }

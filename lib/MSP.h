@@ -22,10 +22,14 @@ void MSP_##NAME(const int fd, MSP_##NAME##_t * const data) { \
         .data=(uint8_t *)data,            \
     };                                    \
     MultiWii_send(fd, &packet);           \
-    do {                                  \
-      packet.size = sizeof(*data);        \
-      MultiWii_recv(fd, &packet);         \
-    } while (packet.code != CODE || packet.checksum); \
+    packet.size = sizeof(*data);          \
+    MultiWii_recv(fd, &packet);           \
+    if (packet.size != sizeof(*data))     \
+      fprintf(stderr, "Packet size mismatch: %d != %ld\n", packet.size, sizeof(*data)); \
+    if (packet.code != CODE)     \
+      fprintf(stderr, "Packet code mismatch: %d != %d\n", packet.code, CODE); \
+    if (packet.checksum)     \
+      fprintf(stderr, "Packet checksum failed: %d\n", packet.checksum); \
 }
 #endif
 

@@ -33,7 +33,6 @@ void MultiWii_recv(int fd, MultiWiiPacket_t *packet) {
     while (*preamble) {
         char c;
         read(fd, &c, 1);
-        printf("RECV [%c], P [%c] %ld\n", c, *preamble, preamble - preamble_recv);
         if (c == *preamble) {
             preamble++;
         } else {
@@ -43,11 +42,19 @@ void MultiWii_recv(int fd, MultiWiiPacket_t *packet) {
     // Preamble has been verified, read packet header
     read(fd, (void *)packet, 2);
     // Read rest of packet data and checksum
-    uint8_t *data = malloc(packet->size + 1);
-    read(fd, packet->data, packet->size + 1);
+    ssize_t bytes_to_read = packet->size + 1;
+    uint8_t *data = malloc(bytes_to_read);
+    do {
+        ssize_t bytes = read(fd, data, bytes_to_read);
+        if (bytes < 0) {
+            fprintf(stderr, "Error reading from serial: %ld\n", bytes);
+            exit(1);
+        }
+        bytes_to_read -= bytes;
+    } while (bytes_to_read > 0);
     // Verify checksum
     packet->checksum = packet->size ^ packet->code;
-    for (uint8_t *ptr = packet->data; ptr <= data + packet->size; ptr++) {
+    for (uint8_t *ptr = data; ptr <= data + packet->size; ptr++) {
         packet->checksum ^= *ptr;
     }
     // Clean existing data in packet data
