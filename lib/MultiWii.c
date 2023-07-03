@@ -33,6 +33,7 @@ void MultiWii_recv(int fd, MultiWiiPacket_t *packet) {
     while (*preamble) {
         char c;
         read(fd, &c, 1);
+        printf("RECV [%c], P [%c] %ld\n", c, *preamble, preamble - preamble_recv);
         if (c == *preamble) {
             preamble++;
         } else {

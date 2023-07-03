@@ -71,8 +71,10 @@ int serial_open(const char *port, int baud) {
       return -1;
   }
   // set speed to baud, 8n1 (no parity)
+  printf("Setting serial port attributes\n");
   set_interface_attribs(fd, baud, 0);
   // set no blocking
-  set_blocking(fd, 1);
+  printf("Setting serial port blocking\n");
+  set_blocking(fd, 0);
   return fd;
 }

@@ -3,12 +3,18 @@
 #include "serial.h"
 
 int main(int argc, char* argv[]) {
-    int fd = serial_open("/dev/ttyUSB0", 115200);
+    if (argc < 2) {
+        printf("Usage: %s [serial port]\n", argv[0]);
+        return 1;
+    }
+    printf("Opening serial port %s\n", argv[1]);
+    int fd = serial_open(argv[1], B115200);
     if (fd < 0) {
         printf("Error opening serial port\n");
         return 1;
     }
     MSP_RAW_IMU_t raw_imu;
+    printf("Reading raw IMU data\n");
     MSP_RAW_IMU(fd, &raw_imu);
     printf("accX: %d\n", raw_imu.accX);
     printf("accY: %d\n", raw_imu.accY);
